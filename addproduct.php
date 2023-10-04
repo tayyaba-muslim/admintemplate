@@ -134,7 +134,17 @@ if(isset($_POST['addpro'])){
 
     <!-- /.card-header -->
     <?php
-    $fetching_pro = "SELECT * from products as p INNER JOIN category as c on p.pcategory = c.cid";
+    $plimit = 4;
+    if(isset($_GET['pgno'])){
+      $getpage = $_GET['pgno'];
+
+    }else{
+      $getpage =1;
+    }
+    $strtrec = ($getpage -1)* $plimit;
+
+    $fetching_pro = "SELECT * from products as p INNER JOIN category as c on p.pcategory = c.cid 
+    LIMIT {$strtrec},{$plimit}";
     $pro_result = mysqli_query($connection, $fetching_pro);
     if (mysqli_num_rows($pro_result) > 0) {
        
@@ -183,9 +193,34 @@ if(isset($_POST['addpro'])){
             <?php
           }
         }
+
           ?>
         </tbody>
       </table>
+      <br>
+      
+      <?php
+      $productsfetch = "SELECT * FROM products";
+      $query_connect = mysqli_query($connection, $productsfetch );
+      if(mysqli_num_rows( $query_connect) > 0){
+        $totalrows = mysqli_num_rows( $query_connect);
+
+        $totalpages = ceil($totalrows / $plimit);
+        echo '<ul class="pagination">';
+        for($i =1; $i <= $totalpages; $i++){
+          echo'<li class="page-item"><a class="page-link" href="addproduct.php?pgno='.$i.'">'.$i.' </a></li>';
+        }
+      }
+      ?>
+  <!-- <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+    <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>
+    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+  </ul>
+</nav> -->
     </div>
   </div>
 </div>
